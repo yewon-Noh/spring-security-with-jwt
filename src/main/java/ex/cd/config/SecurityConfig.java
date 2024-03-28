@@ -49,7 +49,11 @@ public class SecurityConfig {
                         .accessDeniedHandler(jwtAccessDeniedHandler))
 
                 .authorizeHttpRequests(authz -> authz
-                        .requestMatchers("/api/v1/member/login",
+                        .requestMatchers("/",
+                                "/swagger-ui/**",
+                                "/v3/api-docs/**").permitAll()
+                        .requestMatchers(
+                                "/api/v1/member/login",
                                 "/api/v1/member/join").permitAll()
                         .anyRequest().authenticated()
                 );
