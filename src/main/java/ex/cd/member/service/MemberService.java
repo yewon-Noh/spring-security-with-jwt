@@ -1,9 +1,8 @@
 package ex.cd.member.service;
 
-import ex.cd.member.dto.MemberDto;
+import ex.cd.member.dto.LoginRequestDto;
 import ex.cd.member.dto.TokenDto;
 import ex.cd.jwt.TokenProvider;
-import ex.cd.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -20,13 +19,13 @@ public class MemberService {
     /**
      * 로그인
      *
-     * @param loginIn
+     * @param loginRequestDto
      * @return
      */
     @Transactional
-    public TokenDto login(MemberDto.LoginIn loginIn) {
+    public TokenDto login(LoginRequestDto loginRequestDto) {
         // 1. email, password 기반으로 AuthenticationToken 생성
-        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginIn.getEmail(), loginIn.getPassword());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(loginRequestDto.email(), loginRequestDto.password());
 
         // 2. 사용자 검증
         // authenticate 메서드가 실행 될 때 CustomUserDetailsService 의 loadUserByUsername 메서드가 실행됨

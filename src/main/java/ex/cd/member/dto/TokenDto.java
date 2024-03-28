@@ -5,10 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Data
 @Builder
-@AllArgsConstructor
-@NoArgsConstructor
-public class TokenDto {
-    private String token;
-}
+public record TokenDto(
+        String token
+) {}

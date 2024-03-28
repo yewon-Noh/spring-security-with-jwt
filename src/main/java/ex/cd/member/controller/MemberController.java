@@ -1,6 +1,6 @@
 package ex.cd.member.controller;
 
-import ex.cd.member.dto.MemberDto;
+import ex.cd.member.dto.LoginRequestDto;
 import ex.cd.member.dto.TokenDto;
 import ex.cd.member.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -19,11 +19,12 @@ public class MemberController {
 
     /**
      * 로그인 API
-     * @param loginIn
+     *
+     * @param loginRequestDto
      * @return
      */
     @PostMapping("/login")
-    public ResponseEntity<TokenDto> login(@RequestBody MemberDto.LoginIn loginIn) {
-        return ResponseEntity.ok(memberService.login(loginIn));
+    public ResponseEntity<TokenDto> login(@RequestBody LoginRequestDto loginRequestDto) {
+        return ResponseEntity.ok(memberService.login(loginRequestDto));
     }
 }
