@@ -4,6 +4,7 @@ import ex.cd.jwt.JwtAccessDeniedHandler;
 import ex.cd.jwt.JwtAuthenticationEntryPoint;
 import ex.cd.jwt.JwtFilter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -14,6 +15,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.filter.CorsFilter;
+
+import java.security.SecureRandom;
 
 @Configuration
 @EnableWebSecurity
@@ -26,8 +29,8 @@ public class SecurityConfig {
     private final JwtAccessDeniedHandler jwtAccessDeniedHandler;
 
     @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
+    public PasswordEncoder passwordEncoder(@Value("${jwt.salt}") String salt) {
+        return new BCryptPasswordEncoder(4, new SecureRandom(salt.getBytes()));
     }
 
 
@@ -54,7 +57,8 @@ public class SecurityConfig {
                                 "/v3/api-docs/**").permitAll()
                         .requestMatchers(
                                 "/api/v1/member/login",
-                                "/api/v1/member/join").permitAll()
+                                "/api/v1/member/join",
+                                "/api/v1/member/join/**").permitAll()
                         .anyRequest().authenticated()
                 );
 

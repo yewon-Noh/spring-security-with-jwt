@@ -1,20 +1,27 @@
 package ex.cd.member.service;
 
-import ex.cd.member.dto.LoginRequestDto;
-import ex.cd.member.dto.TokenDto;
+import ex.cd.member.dto.*;
 import ex.cd.jwt.TokenProvider;
+import ex.cd.member.model.Authority;
+import ex.cd.member.model.Member;
+import ex.cd.member.repository.MemberRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
 public class MemberService {
+    private final MemberRepository memberRepository;
+
     private final TokenProvider tokenProvider;
     private final AuthenticationManagerBuilder authenticationManagerBuilder;
+
+    private final PasswordEncoder passwordEncoder;
 
     /**
      * 로그인
@@ -36,5 +43,32 @@ public class MemberService {
         return TokenDto.builder()
                 .token(accessToken)
                 .build();
+    }
+
+    /**
+     * 이메일 중복 체크
+     *
+     * @param emailDto
+     * @return
+     */
+    public boolean emailCheck(EmailCheckRequestDto emailDto) {
+        return memberRepository.existsByEmail(emailDto.email());
+    }
+
+    /**
+     * 회원가입
+     *
+     * @param joinDto
+     * @return
+     */
+    @Transactional
+    public boolean join(JoinRequestDto joinDto) {
+        Member member = Member.builder()
+                .email(joinDto.email())
+                .password(passwordEncoder.encode(joinDto.password()))
+                .authority(Authority.ROLE_USER)
+                .build();
+        memberRepository.save(member);
+        return true;
     }
 }
